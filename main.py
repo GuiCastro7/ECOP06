@@ -1,42 +1,68 @@
-from aluno import Aluno
-from disciplina import Disciplina
-from professor import Professor #type: ignore
-from diretor import Diretor #type: ignore
-from funcionário import Funcionario #type: ignore
-from pessoa import Pessoa
 
-disciplinas_disponiveis = []
+from PyQt5 import QtCore, QtWidgets
+from jogo_da_velha import JogoDaVelha
 
-disc = Disciplina("POO", "Alyson", 64, "LEC1")
-disciplinas_disponiveis.append(disc)
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(1014, 600)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(180, 110, 581, 371))
+        self.gridLayoutWidget.setObjectName("gridLayoutWidget")
+        self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout.setObjectName("gridLayout")
 
-disc = Disciplina("Matemática", "Carlão", 32, "I2118")
-disciplinas_disponiveis.append(disc)
+        self.buttons = {}
+        for i in range(3):
+            for j in range(3):
+                button = QtWidgets.QPushButton("")
+                button.setObjectName(f"pushButton_{i * 3 + j + 1}")
+                button.setFixedSize(100, 100)
+                button.clicked.connect(lambda checked, x=i, y=j: self.make_move(x, y))
+                self.buttons[(i, j)] = button
+                self.gridLayout.addWidget(button, i, j)
 
-aluno = Aluno("12345657845", "2024123123", "Alyson", "ECA", ["POO", "Técnicas de Programação", "Matemática"], disciplinas_disponiveis)
-aluno2 = Aluno("2024321321", "José", "ECA", ["POO", "Técnicas de Programação", "Eletrônica", "Matemática Computacional", "Malabarismo", "ChatGPT"], disciplinas_disponiveis)
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(190, 53, 541, 20))
+        self.label.setObjectName("label")
+        MainWindow.setCentralWidget(self.centralwidget)
 
-professor = Professor("20243213210", "1234567", "Josevaldo", "ECA", ["POO"], disciplinas_disponiveis)
+        # Reset button
+        self.reset_button = QtWidgets.QPushButton("Reset")
+        self.reset_button.setGeometry(QtCore.QRect(450, 490, 100, 30))
+        self.reset_button.clicked.connect(self.reset_game)
+        self.reset_button.setParent(self.centralwidget)
 
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-diretor = Diretor("56789012345", "752675621", "Robson", "ECA", ["Matematica"], disciplinas_disponiveis)
+        self.jogo = JogoDaVelha()
 
-funcinário = Funcionario("89012345678", "5678901234", "Armando", "", [], disciplinas_disponiveis)
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "Jogo da Velha"))
+        self.label.setText(_translate("MainWindow", "Vencedor:"))
 
-professor.define_bonus()
-print(professor.salario)
+    def make_move(self, x, y):
+        winner = self.jogo.make_move(x, y)
+        self.buttons[(x, y)].setText('X' if self.jogo.player_turn == 'O' else 'O')
+        if winner:
+            self.label.setText(f"Vencedor: {'O' if self.jogo.player_turn == 'X' else 'X'}")
 
-print(aluno.disciplinas)
+    def reset_game(self):
+        self.jogo.reset_game()
+        self.label.setText("Vencedor:")
+        for button in self.buttons.values():
+            button.setText("")
 
-print(aluno.insere_disciplina("Ciências Humanas", disciplinas_disponiveis))
-
-for disc in aluno.disciplinas:
-    print(disc.nome)
-
-aluno.remove_disciplina("POO")
-
-print("\n\n")
-for disc in aluno.disciplinas:
-    print(disc.nome)
-
-#print(aluno.historico.imprime_historico())
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
