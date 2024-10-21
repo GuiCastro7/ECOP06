@@ -9,54 +9,48 @@ class Lista():
     
     def insere(self, num):
         novo_no = No(num)
-      
-    #Novo elemento com lista vazia   
-        if  self.ini == None:
+
+        if self.ini == None:
             self.ini = novo_no
             return
+
+        aux = self.ini
+        while(True):
+            if aux.prox == None or aux.prox.num > num:
+                break
+            aux = aux.prox
         
-    # Caso o novo dado seja menor que o da cabeça, insere no início
-        if num < self.ini.num:
+        if aux.prox == None and num > aux.num: #último elemento
+            aux.prox = novo_no
+        elif aux == self.ini: #primeiro elemento
             novo_no.prox = self.ini
             self.ini = novo_no
-            return
-        
-        atual = self.ini
-            
-    #Parte com o allyson 
-        #while(True):
-            #aux = self.ini
-            #if aux.num < num:  
-                #aux = aux.prox
-
-    # Percorre a lista para encontrar a posição correta
-        while atual.prox and atual.prox.num < num:
-            atual = atual.prox
-
-    # Insere no fim se chegamos ao final da lista
-        novo_no.prox = atual.prox
-        atual.prox = novo_no
+        else:
+            novo_no.prox = aux.prox
+            aux.prox = novo_no
 
     def imprime(self):
-        atual = self.ini
-        elementos = []
-        while atual:
-            elementos.append(atual.num)
-            atual = atual.prox
-        return elementos
+        aux = self.ini
+        print("\n")
+        while(True):
+            print(aux.num)
+            aux = aux.prox
 
-
+            if aux == None:
+                break
 
 # Aplicação da inserção
-if __name__ == "__main__":
-    lista = Lista()
-    lista.insere(10)
-    lista.insere(5)
-    lista.insere(7)
-    lista.insere(15)
-    
-print(lista.imprime())  # Saída: [5, 7, 10, 15]
-       
+
+lista = Lista()
+lista.insere(27)
+#lista.imprime()
+lista.insere(40)
+#lista.imprime()
+lista.insere(20)
+#lista.imprime()
+lista.insere(74)
+lista.imprime()
+
        
        
        
