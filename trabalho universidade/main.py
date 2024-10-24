@@ -2,7 +2,7 @@ from aluno_universidade import Aluno
 from aluno_universidade import Universidade
 from aluno_universidade import Lista
 
-#Adicionando universidades
+
 
 def menu():
     print("\nSeja bem vindo(a)!")
@@ -30,11 +30,9 @@ def menu():
             programa.insere_aluno(nome_uni, nome, matricula, idade, nroDisciplinas)
         elif opcao == "3":
             nome = input("Nome da universidade: ")
-            universidade = programa.busca_universidade(nome)
-            if universidade:
-                print("Universidade {} encontrada com {} alunos.".format(nome, universidade.qtdAlunos))
-            else:
-                print("Universidade não encontrada.")
+            universidade = programa.busca_universidade(nome)     
+            if universidade == None:
+                print("Universidade não encontrada.")       
         elif opcao == "4":
             matricula = int(input("Matrícula do aluno: "))
             programa.busca_aluno(matricula)
@@ -49,20 +47,6 @@ def menu():
             break
         else:
             print("Opção inválida.")
-
-
-
-# Aplicação da inserção
-#programa = Lista()
-#nome = "USP"
-#programa.imprime(nome)
-#programa.busca_universidade(nome)
-#programa.remove_universidade(nome)
-#nome = "Guilherme"
-#matricula = 202401111
-#sistema.insere_aluno("USP","Guilherme", 2024010605, "20anos", 10)
-#sistema.busca_aluno(nome)
-#sistema.remove_aluno(nome)
 
 
 if __name__ == "__main__":
