@@ -29,16 +29,14 @@ class Lista:
         nova_uni = Universidade(nome)
 
         if  self.universidades == None:
-            self.universidades = nova_uni
+                self.universidades = nova_uni
 
         else:
             atual = self.universidades
             ant = None
-
-            while(True):
-                if atual == None:
-                    break
-                elif atual.nome < nome:
+            
+        #Insere faculdade em ordem alfabetica
+            while atual and atual.nome < nome:
                     ant = atual
                     atual = atual.prox
 
@@ -50,18 +48,15 @@ class Lista:
                 ant.prox = nova_uni
                 nova_uni.ant = ant
                 nova_uni.prox = atual
-                while(True):
-                    if atual == None:
-                        break
-                    else:
-                        atual.ant = nova_uni
+                if atual:
+                    atual.ant = nova_uni
                     
         nova_uni = nome
         print("Universidade {} inserida com sucesso.".format(nome))
 
     def insere_aluno(self, nome_uni, nome, matricula, idade, nro_disciplinas):
         universidade = self.busca_universidade(nome_uni)
-        if not universidade:
+        if universidade == None:
             print("Universidade não encontrada.")
 
             opcao = input("Deseja tentar outra universidade? (1 para sim, qualquer outra tecla para não): ")
@@ -71,7 +66,7 @@ class Lista:
             return
         
         atual_aluno = universidade.inicioAluno
-        while atual_aluno is not None:
+        while atual_aluno:
             if atual_aluno.matricula == matricula:
                 print(("Aluno com matrícula {:02d} já existe na universidade {}.".format(matricula, nome_uni)))
                 return
@@ -86,7 +81,7 @@ class Lista:
             atual = universidade.inicioAluno
             anterior = None
 
-            while atual is not None and atual.matricula < matricula:
+            while atual and atual.matricula < matricula:
                 anterior = atual
                 atual = atual.prox
 
@@ -98,7 +93,7 @@ class Lista:
                 anterior.prox = novo_aluno
                 novo_aluno.ant = anterior
                 novo_aluno.prox = atual
-                if atual is not None:
+                if atual:
                     atual.ant = novo_aluno
 
         universidade.qtdAlunos += 1
@@ -107,8 +102,18 @@ class Lista:
 
     def busca_universidade(self, nome):
         atual = self.universidades
-        while atual is not None:
+        while atual:
             if atual.nome == nome:
+                print("Universidade {} encontrada com {} alunos.".format(atual.nome, atual.qtdAlunos))   
+
+                aluno_atual = atual.inicioAluno
+                if aluno_atual == None:
+                    print("Nenhum aluno matriculado.")
+                else:
+                    print("Alunos matriculados:")
+                    while aluno_atual:
+                        print("Nome: {}, Matrícula: {:02d}".format(aluno_atual.nome,aluno_atual.matricula))
+                        aluno_atual = aluno_atual.prox         
                 return atual
             atual = atual.prox
         return None
@@ -117,9 +122,9 @@ class Lista:
     def busca_aluno(self, matricula):
         resultados = []
         atual_uni = self.universidades
-        while atual_uni is not None:
+        while atual_uni:
             atual_aluno = atual_uni.inicioAluno
-            while atual_aluno is not None:
+            while atual_aluno:
                 if atual_aluno.matricula == matricula:
                     resultados.append((atual_aluno.nome, atual_uni.nome))
                 atual_aluno = atual_aluno.prox
@@ -138,55 +143,54 @@ class Lista:
 
     def remove_universidade(self, nome):
         universidade = self.busca_universidade(nome)
-        if not universidade:
+        if universidade == None:
             print("Universidade não encontrada.")
             return
 
-        # Remover todos os alunos da universidade
         while(True):
             if universidade.inicioAluno == None:
                 self.remove_aluno(universidade.inicioAluno.matricula, from_universidade=universidade)
             break
             
-        # Ajustar a lista de universidades
+
         if universidade.ant == None:
             self.universidades = universidade.prox
         else:
             universidade.ant.prox = universidade.prox
 
-        if universidade.prox is not None:
+        if universidade.prox:
             universidade.prox.ant = universidade.ant
 
         print("Universidade {} removida com sucesso.".format(nome))
 
-    def remove_aluno(self, matricula, from_universidade=None):
+    def remove_aluno(self, matricula, from_universidade = None):
         if from_universidade:
             universidade = from_universidade
         else:
             universidade = self.busca_universidade_por_aluno(matricula)
 
-        #Se não achar o aluno
-        if not universidade:
+    
+        if universidade == None:
             print("Aluno não encontrado.")
             return
         
         alunos_encontrados = []
         atual_uni = self.universidades
         
-        # Encontrar todos os alunos com a mesma matrícula
-        while atual_uni is not None:
+      
+        while atual_uni:
             atual_aluno = atual_uni.inicioAluno
-            while atual_aluno is not None:
+            while atual_aluno:
                 if atual_aluno.matricula == matricula:
-                    alunos_encontrados.append((atual_aluno, atual_uni))  # Armazena o aluno e a universidade
+                    alunos_encontrados.append((atual_aluno, atual_uni)) 
                 atual_aluno = atual_aluno.prox
             atual_uni = atual_uni.prox
 
-        if not alunos_encontrados:
+        if alunos_encontrados == None:
             print("Aluno não encontrado.")
             return
 
-        # Se houver mais de um aluno, pedir ao usuário para escolher
+      
         if len(alunos_encontrados) > 1:
             print("Foram encontrados os seguintes alunos com a matrícula {:02d}:".format(matricula))
             for i, (aluno, nome_uni) in enumerate(alunos_encontrados):
@@ -203,16 +207,15 @@ class Lista:
             aluno_selecionado, universidade = alunos_encontrados[0]
             
 
-        #Remoção do aluno selecionado 
         atual = universidade.inicioAluno
-        while atual is not None:
+        while atual:
             if atual.matricula == aluno_selecionado.matricula:
                 if atual.ant == None:
                     universidade.inicioAluno = atual.prox
                 else:
                     atual.ant.prox = atual.prox
 
-                if atual.prox is not None:
+                if atual.prox:
                     atual.prox.ant = atual.ant
 
                 universidade.qtdAlunos -= 1
@@ -224,30 +227,14 @@ class Lista:
 
     def busca_universidade_por_aluno(self, matricula):
         atual_uni= self.universidades
-        while atual_uni is not None:
+        while atual_uni:
             atual_aluno = atual_uni.inicioAluno
-            while atual_aluno is not None:
+            while atual_aluno:
                 if atual_aluno.matricula == matricula:
-                    return atual_uni  # ou o que você precisar retornar
-                atual_aluno = atual_aluno.prox  # Ou como você navega na lista
+                    return atual_uni  
+                atual_aluno = atual_aluno.prox  
             atual_uni = atual_uni.prox
-        return None  # Se não encontrar o aluno
+        return None  
 
    
 
-
-
-
-# Aplicação da inserção
-#lista = Lista()
-#uni = "USP"
-#lista.insere(uni)
-#lista.imprime()
-#uni = "UFMG"
-#lista.insere(uni)
-#lista.imprime()
-#lista.reverso()
-#lista.insere(uni)
-#lista.imprime()
-#lista.reverso()
-#lista.insere(uni)
