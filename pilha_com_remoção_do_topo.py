@@ -18,11 +18,8 @@ class Pilha:
         if not self.topo:
             print("Pilha vazia! Não há elementos para remover.")
             return
-        
-        # O topo da pilha aponta para o próximo nó
-        topo_removido = self.topo
         self.topo = self.topo.prox
-        topo_removido = None  # Libera o nó removido
+        
 
     def exibir_lista(self):
         """Exibe os elementos da lista."""
@@ -32,26 +29,31 @@ class Pilha:
             atual = atual.prox
         print("None")  # Final da lista
 
-# Criando a lista ligada
 lista = Pilha()
 
-# Adicionando elementos ao início da lista
+
+
 lista.adicionar_no_inicio(10)
-lista.adicionar_no_inicio(20)
+lista.adicionar_no_inicio(40)
 lista.adicionar_no_inicio(30)
+lista.adicionar_no_inicio(20)
+lista.adicionar_no_inicio(15)
+lista.adicionar_no_inicio(50)
+lista.adicionar_no_inicio(47)
 
-# Exibindo a lista
-print("Lista antes da remoção:")
-lista.exibir_lista()  # Saída: 30 -> 20 -> 10 -> None
+print("\nLista antes da remoção:")
+lista.exibir_lista()  
 
-lista.desempilhar()  # Remover o valor 30
+lista.desempilhar()
+print("\nLista após a remoção:")
+lista.exibir_lista() 
 
-# Exibindo a lista após a remoção
-print("Lista após a remoção:")
-lista.exibir_lista()  # Esperado: 20 -> 10 -> None
 
-lista.desempilhar()  # Remover o valor 20
+lista.desempilhar()  
+print("\nLista após a remoção:")
+lista.exibir_lista() 
 
-print("Lista após a remoção:")
-lista.exibir_lista()  # Esperado: 10 -> None
+lista.desempilhar() 
+print("\nLista após a remoção:")
+lista.exibir_lista()  
 
