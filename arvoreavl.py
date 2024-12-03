@@ -83,17 +83,10 @@ class ArvoreAVL:
 
         return raiz
 
-    def insere_key(self, num):
+    def insere_num(self, num):
         self.raiz = self.insere(self.raiz, num)
 
-    # Metodo de exibir em ordem a arvore AVL (linear)
-    def ordem(self, raiz):
-        if raiz:
-            self.ordem(raiz.esquerda)
-            print(raiz.num, end=" ")
-            self.ordem(raiz.direita)
-
-    # Método para exibir a árvore de maneira hierárquica (raízes)
+    # Método para exibir a árvore de maneira hierárquica (horizontal)
     def arvore_hierárquica(self, no, level=0):
         if no is not None:
             # Primeiro imprime a subárvore direita, para posicioná-la no topo visual
@@ -103,20 +96,49 @@ class ArvoreAVL:
             # Depois imprime a subárvore esquerda
             self.arvore_hierárquica(no.esquerda, level + 1)
 
+    # Método para exibir a árvore em forma de pirâmide
+    def arvore_em_piramide(self, no):
+        if not no:
+            return
+
+        altura = self.altura(no)
+        largura = 2 ** altura - 2
+
+        fila = [(no, largura // 2)]
+        espacos_entre = largura
+
+        while fila:
+            nivel_proximo = []
+            linha = ""
+
+            for no, posicao in fila:
+                if no:
+                    linha += " " * (posicao - len(linha)) + str(no.num)
+                    nivel_proximo.append((no.esquerda, posicao - espacos_entre // 3))
+                    nivel_proximo.append((no.direita, posicao + espacos_entre // 3))
+                else:
+                    linha += " " * (posicao - len(linha))
+                    nivel_proximo.append((None, 0))
+
+            print(linha)
+            espacos_entre //= 2
+            fila = [no for no in nivel_proximo if no[0]]
+
+
 # Teste da árvore AVL
 avl = ArvoreAVL()
 
 # Inserindo os valores na árvore
-valores = [15, 5, 25, 3, 10, 20, 30, 7]
+valores = [9, 5, 1, 3, 10, 4, 6, 7]
 for val in valores:
-    avl.insere_key(val)
-
-# Exibindo a árvore AVL em ordem
-print("Árvore AVL em ordem :")
-avl.ordem(avl.raiz)
-print("\n")
+    avl.insere_num(val)
 
 # Exibindo a árvore com a estrutura hierárquica (raízes e filhos)
 print("Visualização de uma arvore AVL hierarquicamente:")
 avl.arvore_hierárquica(avl.raiz)
+print("\n")
+
+# Exibindo a árvore AVL no formato em pirâmide
+print("Árvore AVL em formato de pirâmide:")
+avl.arvore_em_piramide(avl.raiz)
 print("\n")
